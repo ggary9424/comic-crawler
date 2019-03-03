@@ -26,3 +26,4 @@ go run main.go
 - [ ] An User Interface can edit the following comics. Try to use [GRPC Web](https://www.google.com/search?q=grpc+web&oq=grpc+web&aqs=chrome..69i57j69i60l2j69i59j69i60j0.2801j0j4&sourceid=chrome&ie=UTF-8)
 - [ ] Comprehensive log system.
 - [ ] Dockerization version.
+- [ ] Elegant way to deal with callback hell when using colly. (Maybe use `Go Channel`)
