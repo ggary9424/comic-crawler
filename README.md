@@ -7,6 +7,10 @@ Mainly, this project is created for me to learn the `Golang`. Besides, I want to
 1. Familiar with `Golang`.
 2. Try to build a project that is not only a toy but also a project can run at production environment.
 
+## Limitation
+
+Now, only support the [cartoonmad](https://www.cartoonmad.com/) website.
+
 ## Environment
 
 1. Golang v1.12
