@@ -4,17 +4,25 @@ import (
 	"context"
 	"time"
 
-	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/mongo"
-	"github.com/mongodb/mongo-go-driver/options"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Comic is comic type
 type Comic struct {
-	ComicID       string
-	Name          string
-	Category      string
-	LastUpdatedAt time.Time
+	_id            string
+	CrawledFrom    string
+	RecognizedID   string
+	GlobalID       string
+	Title          string
+	Category       string
+	ImageURL       string
+	Link           string
+	ComicUpdatedAt time.Time
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	DeletedAt      time.Time
 }
 
 // SaveComic is to save a comic
@@ -22,15 +30,28 @@ func SaveComic(comic Comic) (*mongo.UpdateResult, error) {
 	return Collections.Comics.UpdateOne(
 		context.Background(),
 		bson.D{
-			{"comicID", comic.ComicID},
+			{"crawled_from", comic.CrawledFrom},
+			{"recognized_id", comic.RecognizedID},
 		},
 		bson.D{
 			{
 				"$set",
 				bson.D{
-					{"name", comic.Name},
+					{"title", comic.Title},
+					{"crawled_from", comic.CrawledFrom},
 					{"category", comic.Category},
-					{"lastUpdatedAt", comic.LastUpdatedAt},
+					{"image_url", comic.ImageURL},
+					{"link", comic.Link},
+					{"comic_updated_at", comic.ComicUpdatedAt},
+					{"updated_at", time.Now()},
+				},
+			},
+			{
+				"$setOnInsert",
+				bson.D{
+					{"global_id", nil},
+					{"created_at", time.Now()},
+					{"deleted_at", nil},
 				},
 			},
 		},

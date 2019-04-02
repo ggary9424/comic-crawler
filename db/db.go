@@ -3,7 +3,8 @@ package db
 import (
 	"context"
 
-	"github.com/mongodb/mongo-go-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type collections struct {
@@ -18,7 +19,11 @@ var Collections collections
 
 // Connect to Database
 func Connect(mongoURL string, dbName string) (*mongo.Client, error) {
-	client, e := mongo.Connect(context.Background(), mongoURL, nil)
+	client, e := mongo.Connect(
+		context.Background(),
+		options.Client().ApplyURI(mongoURL),
+		nil,
+	)
 
 	if e != nil {
 		return nil, e
