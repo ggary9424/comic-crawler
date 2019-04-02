@@ -11,18 +11,18 @@ import (
 
 // Comic is comic type
 type Comic struct {
-	_id            string
-	CrawledFrom    string
-	RecognizedID   string
-	GlobalID       string
-	Title          string
-	Category       string
-	ImageURL       string
-	Link           string
-	ComicUpdatedAt time.Time
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      time.Time
+	_id            string    `bson:"_id"`
+	CrawledFrom    string    `bson:"crawled_from"`
+	RecognizedID   string    `bson:"recognized_id"`
+	GlobalID       string    `bson:"global_id"`
+	Title          string    `bson:"title"`
+	Category       string    `bson:"category"`
+	ImageURL       string    `bson:"image_url"`
+	Link           string    `bson:"link"`
+	ComicUpdatedAt time.Time `bson:"comic_updated_at"`
+	CreatedAt      time.Time `bson:"created_at"`
+	UpdatedAt      time.Time `bson:"updated_at"`
+	DeletedAt      time.Time `bson:"deleted_at"`
 }
 
 // SaveComic is to save a comic
