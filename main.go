@@ -70,25 +70,28 @@ func main() {
 		return
 	}
 
-	comicIDs := []string{"1878", "3583"}
+	comicIDs := []string{"1152", "2504", "1878", "3583", "4085", "1698", "5200", "4982", "3899"}
 	collyController := colly.NewCollector()
 
 	collyController.OnHTML("body", func(body *HTMLElement) {
 		reg, _ := regexp.Compile("https:\\/\\/www\\.cartoonmad\\.com\\/comic\\/(\\d+)")
 		submatch := reg.FindStringSubmatch(body.Request.URL.String())
-		comic := db.Comic{ComicID: submatch[1]}
+
+		var comicTitle string
+		var comicCategory string
+		var comicUpdatedAt time.Time
 		body.ForEach("body > table > tbody > tr > td:nth-child(2) > table > tbody > tr", func(_ int, tr *HTMLElement) {
 			if tr.Index == 2 {
 				tr.ForEach("td:nth-child(2) a", func(i int, a *HTMLElement) {
 					if i == 1 {
 						// Convert from big5 to utf8
 						utf8String, _, _ := transform.String(traditionalchinese.Big5.NewDecoder(), a.Text)
-						comic.Category = utf8String
+						comicCategory = utf8String
 					}
 					if i == 2 {
 						// Convert from big5 to utf8
 						utf8String, _, _ := transform.String(traditionalchinese.Big5.NewDecoder(), a.Text)
-						comic.Name = utf8String
+						comicTitle = utf8String
 					}
 				})
 			}
@@ -98,21 +101,34 @@ func main() {
 					if font.Index == 0 {
 						reg, _ := regexp.Compile("\\d+/\\d+/\\d+ \\d+:\\d+:\\d+ (AM|PM)")
 						dateString := reg.FindString(font.Text)
-						lastUpdatedAt, _ := time.Parse("1/2/2006 3:04:05 PM", dateString)
-						comic.LastUpdatedAt = lastUpdatedAt
+						comicUpdatedAt, _ = time.Parse("1/2/2006 3:04:05 PM", dateString)
 					}
 				})
 			}
 		})
 
+		comic := db.Comic{
+			CrawledFrom:    "動漫狂",
+			RecognizedID:   submatch[1],
+			Title:          comicTitle,
+			Category:       comicCategory,
+			ImageURL:       "https://www.cartoonmad.com/cartoonimg/coimg/" + submatch[1] + ".jpg",
+			ComicUpdatedAt: comicUpdatedAt,
+			Link:           body.Request.URL.String(),
+		}
+
 		log.WithFields(log.Fields{
-			"comicID":       comic.ComicID,
-			"name":          comic.Name,
-			"category":      comic.Category,
-			"lastUpdatedAt": comic.LastUpdatedAt,
+			"CrawledFrom":    comic.CrawledFrom,
+			"RecognizedID":   comic.RecognizedID,
+			"Title":          comic.Title,
+			"Category":       comic.Category,
+			"ComicUpdatedAt": comic.ComicUpdatedAt,
 		}).Debug("Log comic content.")
 
-		db.SaveComic(comic)
+		_, err := db.SaveComic(comic)
+		if err != nil {
+			log.Fatal(err)
+		}
 	})
 
 	for _, comicID := range comicIDs {
