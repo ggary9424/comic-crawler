@@ -93,7 +93,7 @@ func startRunningCrawler() {
 			RecognizedID:   submatch[1],
 			Title:          comicTitle,
 			Category:       comicCategory,
-			ImageURL:       "https://www.cartoonmad.com/cartoonimg/coimg/" + submatch[1] + ".jpg",
+			ImageURL:       "https://www.cartoonmad.com/cartoonimgs/coimg/" + submatch[1] + ".jpg",
 			ComicUpdatedAt: comicUpdatedAt,
 			Link:           body.Request.URL.String(),
 		}
