@@ -51,7 +51,7 @@ func startRunningCrawler() {
 		return
 	}
 
-	comicIDs := []string{"1152", "2504", "1878", "3583", "4085", "1698", "5200", "4982", "3899", "1221"}
+	comicIDs := []string{"1152", "2504", "1878", "3583", "4085", "1698", "5200", "4982", "3899", "1221", "4975"}
 	collyController := colly.NewCollector()
 
 	collyController.OnHTML("body", func(body *HTMLElement) {
